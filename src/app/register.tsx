@@ -19,26 +19,41 @@ export default function Home(){
 
           <Input>
             <Input.Field
+              placeholder="Nome"
+              onChangeText={() => console.log()}
+            />
+          </Input>
+
+          <Input>
+            <Input.Field
+              placeholder="Data de nascimento"
+              onChangeText={() => console.log()}
+            />
+          </Input>
+
+          <Input>
+            <Input.Field
               placeholder="Senha"
               onChangeText={() => console.log()}
             />
           </Input>
 
+          <Input>
+            <Input.Field
+              placeholder="Confirmar senha"
+              onChangeText={() => console.log()}
+            />
+          </Input>
+
           <Button
-            title="Entrar"
+            title="Registrar"
             onPress={()=> console.log('xD')}
             isLoading={false}
           />
 
-          <Link
-            href="/register"
-            className="text-gray-100 text-base font-bold text-center mt-8"
-          >
-            Ainda não possui acesso?
-          </Link>
-          <Link href="/register" asChild>
+          <Link href="/" asChild>
             <Button
-              title="Criar conta"
+              title="Voltar para o login"
               onPress={()=> console.log('xD')}
               isLoading={false}
               outlined
