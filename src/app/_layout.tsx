@@ -1,29 +1,27 @@
-import "@/styles/global.css"
+import '@/styles/global.css';
 
-import { Slot } from "expo-router"
-import { StatusBar } from "expo-status-bar"
+import { Slot } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import {
   useFonts,
   Roboto_700Bold,
   Roboto_500Medium,
-  Roboto_400Regular
-} from "@expo-google-fonts/roboto"
+  Roboto_400Regular,
+} from '@expo-google-fonts/roboto';
 
-import { Loading } from "@/components/loading"
+import { Loading } from '@/components/loading';
 
-
-
-export default function Layout(){
+export default function Layout() {
   const [fontsLoaded] = useFonts({
     Roboto_700Bold,
     Roboto_500Medium,
-    Roboto_400Regular
-  })
+    Roboto_400Regular,
+  });
 
-  return(
+  return (
     <>
-      <StatusBar style="light"/>
+      <StatusBar style="light" />
       {fontsLoaded ? <Slot /> : <Loading />}
     </>
-  )
+  );
 }
