@@ -22,19 +22,19 @@ export default function Home() {
         />
         {/* <Text className='color-white text-xl font-bold mt-8'>Acesse sua conta</Text> */}
         <View className="w-full mt-4 gap-3">
-          <Input>
+          <Input.Container>
             <Input.Field
               placeholder="E-mail"
               onChangeText={() => console.log()}
             />
-          </Input>
+          </Input.Container>
 
-          <Input>
+          <Input.Container>
             <Input.Field
               placeholder="Senha"
               onChangeText={() => console.log()}
             />
-          </Input>
+          </Input.Container>
 
           <Button
             title="Entrar"
@@ -44,7 +44,7 @@ export default function Home() {
 
           <Link
             href="/register"
-            className="text-gray-100 text-base font-bold text-center mt-8"
+            className="text-gray-100 text-base font-bold text-center mt-20"
           >
             Ainda não possui acesso?
           </Link>

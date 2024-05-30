@@ -3,7 +3,7 @@ import { TextInput, View, TextInputProps } from 'react-native';
 
 import { colors } from '@/styles/colors';
 
-function Input({ children }: { children: ReactNode }) {
+function InputContainer({ children }: { children: ReactNode }) {
   return (
     <View className="w-full h-14 flex-row items-center gap-3 p-3 bg-gray-600 rounded-lg">
       {children}
@@ -11,7 +11,7 @@ function Input({ children }: { children: ReactNode }) {
   );
 }
 
-function Field({ ...rest }: TextInputProps) {
+function InputField({ ...rest }: TextInputProps) {
   return (
     <TextInput
       className="flex-1 text-white text-base font-regular"
@@ -21,6 +21,7 @@ function Field({ ...rest }: TextInputProps) {
   );
 }
 
-Input.Field = Field;
-
-export { Input };
+export const Input = {
+  Container: InputContainer,
+  Field: InputField,
+};
