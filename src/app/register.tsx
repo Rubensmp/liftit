@@ -1,14 +1,41 @@
 import { Button } from '@/components/button';
 import { Input } from '@/components/input';
-import { Link } from 'expo-router';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { router } from 'expo-router';
+import { useForm } from 'react-hook-form';
 import {
   Image,
   ImageBackground,
   KeyboardAvoidingView,
   View,
 } from 'react-native';
+import { z } from 'zod';
+
+const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+
+const registerSchema = z
+  .object({
+    email: z.string().min(1, 'Campo necessário'),
+    name: z.string().min(1, 'Campo necessário'),
+    password: z.string().min(6, 'Mínimo de 6 caracteres'),
+    confirmPassword: z.string().min(6, 'Mínimo de 6 caracteres'),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: 'As senhas não coincidem',
+    path: ['confirmPassword'],
+  });
+
+type RegisterSchema = z.infer<typeof registerSchema>;
 
 export default function Home() {
+  const { control, handleSubmit } = useForm({
+    resolver: zodResolver(registerSchema),
+  });
+
+  function onSubmit(data: RegisterSchema) {
+    console.log(data);
+  }
+
   return (
     <KeyboardAvoidingView className="flex-1" behavior={'padding'}>
       <ImageBackground
@@ -22,55 +49,38 @@ export default function Home() {
         />
         {/* <Text className='color-white text-xl font-bold mt-8'>Acesse sua conta</Text> */}
         <View className="w-full mt-4 gap-3">
-          <Input.Container>
-            <Input.Field
-              placeholder="E-mail"
-              onChangeText={() => console.log()}
-            />
-          </Input.Container>
+          <Input.Controlled
+            placeholder="E-mail"
+            name="email"
+            control={control}
+          />
 
-          <Input.Container>
-            <Input.Field
-              placeholder="Nome"
-              onChangeText={() => console.log()}
-            />
-          </Input.Container>
+          <Input.Controlled placeholder="Nome" name="name" control={control} />
 
-          <Input.Container>
-            <Input.Field
-              placeholder="Data de nascimento"
-              onChangeText={() => console.log()}
-            />
-          </Input.Container>
+          <Input.Controlled
+            placeholder="Senha"
+            name="password"
+            control={control}
+          />
 
-          <Input.Container>
-            <Input.Field
-              placeholder="Senha"
-              onChangeText={() => console.log()}
-            />
-          </Input.Container>
-
-          <Input.Container>
-            <Input.Field
-              placeholder="Confirmar senha"
-              onChangeText={() => console.log()}
-            />
-          </Input.Container>
+          <Input.Controlled
+            placeholder="Confirmar senha"
+            name="confirmPassword"
+            control={control}
+          />
 
           <Button
             title="Registrar"
-            onPress={() => console.log('xD')}
+            onPress={handleSubmit(onSubmit)}
             isLoading={false}
           />
 
-          <Link href="/" asChild>
-            <Button
-              title="Voltar para o login"
-              onPress={() => console.log('xD')}
-              isLoading={false}
-              outlined
-            />
-          </Link>
+          <Button
+            title="Voltar para o login"
+            onPress={() => router.navigate('/')}
+            isLoading={false}
+            outlined
+          />
         </View>
       </ImageBackground>
     </KeyboardAvoidingView>
