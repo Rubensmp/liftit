@@ -48,9 +48,9 @@ export default function Home() {
     resolver: zodResolver(registerSchema),
   });
 
-  const mutation = useMutation<UserTypes, Error, UserTypes, unknown>({
+  const mutation = useMutation({
     mutationFn: createUser,
-    onSuccess: async (data: any) => {
+    onSuccess: async (data: { acessToken: string }) => {
       await AsyncStorage.setItem('acessToken', data.acessToken);
       router.navigate('/main');
     },

@@ -6,6 +6,7 @@ import {
   Image,
   ImageBackground,
   KeyboardAvoidingView,
+  Text,
   View,
 } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -35,9 +36,9 @@ export default function Auth() {
     resolver: zodResolver(loginSchema),
   });
 
-  const mutation = useMutation<LoginSchema, Error, LoginSchema, unknown>({
+  const mutation = useMutation({
     mutationFn: authUser,
-    onSuccess: async (data: any) => {
+    onSuccess: async (data: { acessToken: string }) => {
       await AsyncStorage.setItem('acessToken', data.acessToken);
       router.navigate('/main');
     },
@@ -77,6 +78,12 @@ export default function Auth() {
             control={control}
             secureTextEntry
           />
+
+          {!!mutation.error && (
+            <Text className="color-rose-500 text-xs font-regular ">
+              Erro ao criar conta. Tente novamente mais tarde.
+            </Text>
+          )}
 
           <Button
             title="Entrar"
