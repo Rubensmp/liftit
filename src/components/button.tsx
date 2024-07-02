@@ -27,7 +27,7 @@ export function Button({
     >
       {isLoading ? (
         <ActivityIndicator
-          className={outlined ? 'text-yellow-500' : 'text-white'}
+          className={outlined ? 'text-yellow-500' : 'text-gray-600'}
         />
       ) : (
         <Text

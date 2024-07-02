@@ -1,21 +1,28 @@
-import { Button } from '@/components/button';
-import { Input } from '@/components/input';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useForm } from 'react-hook-form';
 import {
   Image,
   ImageBackground,
   KeyboardAvoidingView,
+  Text,
   View,
 } from 'react-native';
 import { z } from 'zod';
 
-const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+import { Button } from '@/components/button';
+import { Input } from '@/components/input';
+import { api } from '@/server/api';
+import { UserTypes } from '@/types/user';
 
 const registerSchema = z
   .object({
-    email: z.string().min(1, 'Campo necessário'),
+    email: z
+      .string()
+      .min(1, 'Campo necessário')
+      .email('Não esta no formato de email'),
     name: z.string().min(1, 'Campo necessário'),
     password: z.string().min(6, 'Mínimo de 6 caracteres'),
     confirmPassword: z.string().min(6, 'Mínimo de 6 caracteres'),
@@ -27,13 +34,31 @@ const registerSchema = z
 
 type RegisterSchema = z.infer<typeof registerSchema>;
 
+const createUser = async (userData: UserTypes): Promise<any> => {
+  const response = await api.post('/user', userData, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return response.data as UserTypes;
+};
+
 export default function Home() {
   const { control, handleSubmit } = useForm({
     resolver: zodResolver(registerSchema),
   });
 
+  const mutation = useMutation<UserTypes, Error, UserTypes, unknown>({
+    mutationFn: createUser,
+    onSuccess: async (data: any) => {
+      await AsyncStorage.setItem('acessToken', data.acessToken);
+      router.navigate('/main');
+    },
+  });
+
   function onSubmit(data: RegisterSchema) {
-    console.log(data);
+    const { confirmPassword, ...userData } = data;
+    mutation.mutate(userData);
   }
 
   return (
@@ -69,16 +94,22 @@ export default function Home() {
             control={control}
           />
 
+          {!!mutation.error && (
+            <Text className="color-rose-500 text-xs font-regular ">
+              Erro ao criar conta. Tente novamente mais tarde.
+            </Text>
+          )}
+
           <Button
             title="Registrar"
             onPress={handleSubmit(onSubmit)}
-            isLoading={false}
+            isLoading={mutation.isPending}
+            disabled={mutation.isPending}
           />
 
           <Button
             title="Voltar para o login"
-            onPress={() => router.navigate('/')}
-            isLoading={false}
+            onPress={() => router.navigate('/auth')}
             outlined
           />
         </View>
