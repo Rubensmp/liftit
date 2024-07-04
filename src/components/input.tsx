@@ -6,7 +6,7 @@ import { Control, useController } from 'react-hook-form';
 
 interface ControlledInputProps extends TextInputProps {
   name: string;
-  control: Control;
+  control: any;
 }
 
 interface ContainerProps {

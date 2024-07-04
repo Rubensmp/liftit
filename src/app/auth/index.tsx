@@ -14,6 +14,7 @@ import { z } from 'zod';
 import { api } from '@/server/api';
 import { useMutation } from '@tanstack/react-query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthType } from '@/types/auth';
 
 const loginSchema = z.object({
   email: z.string().min(1, 'Campo necessário'),
@@ -22,13 +23,13 @@ const loginSchema = z.object({
 
 type LoginSchema = z.infer<typeof loginSchema>;
 
-const authUser = async (userData: LoginSchema): Promise<any> => {
+const authUser = async (userData: LoginSchema): Promise<AuthType> => {
   const response = await api.post('/auth', userData, {
     headers: {
       'Content-Type': 'application/json',
     },
   });
-  return response.data as LoginSchema;
+  return response.data as AuthType;
 };
 
 export default function Auth() {
@@ -38,7 +39,7 @@ export default function Auth() {
 
   const mutation = useMutation({
     mutationFn: authUser,
-    onSuccess: async (data: { acessToken: string }) => {
+    onSuccess: async (data: AuthType) => {
       await AsyncStorage.setItem('acessToken', data.acessToken);
       router.navigate('/main');
     },
@@ -98,13 +99,11 @@ export default function Auth() {
           >
             Ainda não possui acesso?
           </Link>
-          {/* <Link href="/register" asChild> */}
           <Button
             title="Criar conta"
             onPress={() => router.navigate('/auth/register')}
             outlined
           />
-          {/* </Link> */}
         </View>
       </ImageBackground>
     </KeyboardAvoidingView>

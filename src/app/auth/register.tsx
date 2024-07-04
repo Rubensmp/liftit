@@ -16,6 +16,7 @@ import { Button } from '@/components/button';
 import { Input } from '@/components/input';
 import { api } from '@/server/api';
 import { UserTypes } from '@/types/user';
+import { AuthType } from '@/types/auth';
 
 const registerSchema = z
   .object({
@@ -34,23 +35,23 @@ const registerSchema = z
 
 type RegisterSchema = z.infer<typeof registerSchema>;
 
-const createUser = async (userData: UserTypes): Promise<any> => {
+const createUser = async (userData: UserTypes): Promise<AuthType> => {
   const response = await api.post('/user', userData, {
     headers: {
       'Content-Type': 'application/json',
     },
   });
-  return response.data as UserTypes;
+  return response.data as AuthType;
 };
 
 export default function Home() {
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit } = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
   });
 
   const mutation = useMutation({
     mutationFn: createUser,
-    onSuccess: async (data: { acessToken: string }) => {
+    onSuccess: async (data: AuthType) => {
       await AsyncStorage.setItem('acessToken', data.acessToken);
       router.navigate('/main');
     },
@@ -78,6 +79,7 @@ export default function Home() {
             placeholder="E-mail"
             name="email"
             control={control}
+            keyboardType="email-address"
           />
 
           <Input.Controlled placeholder="Nome" name="name" control={control} />
@@ -86,12 +88,14 @@ export default function Home() {
             placeholder="Senha"
             name="password"
             control={control}
+            secureTextEntry
           />
 
           <Input.Controlled
             placeholder="Confirmar senha"
             name="confirmPassword"
             control={control}
+            secureTextEntry
           />
 
           {!!mutation.error && (
